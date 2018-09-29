@@ -71,6 +71,9 @@
       },20)
     },
     methods:{
+      /*uploadClick () {
+        this.addItem()
+      },*/
       addItem(){
         this.$refs.file.click();
       },

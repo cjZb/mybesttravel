@@ -11,23 +11,23 @@
       <div class="main-identify">
         <div class="main-identify-item">
           <div>真实姓名</div>
-          <input type="text"/>
+          <input type="text" placeholder="请输入真实姓名"/>
         </div>
         <div class="main-identify-item">
           <div>手机号码</div>
-          <input type="text"/>
+          <input type="text" placeholder="请输入手机号码"/>
         </div>
         <div class="main-identify-item">
           <div>短信验证码</div>
           <div style="display: flex; width: 3.4rem">
-            <input style="width: 1.6rem; margin-right: 0.30rem" type="text"/>
+            <input style="width: 1.6rem; margin-right: 0.30rem; border: 0" type="text" placeholder="请输入验证码"/>
             <div class="main-identify-item-num" @click="sendCode" v-if="code">发送验证码</div>
             <div class="main-identify-item-num" v-if="!code">{{ time }}s</div>
           </div>
         </div>
         <div class="main-identify-item">
           <div>身份证号码</div>
-          <input type="text"/>
+          <input type="text" placeholder="请输入身份证号码"/>
         </div>
       </div>
     </div>
@@ -47,12 +47,14 @@
               :maxUploadNumber="1"
               @uploadItems="getInputItems"
               @uploadUrls="getInput"
+              ref="child"
             > </upload>
             <!--<div style="color: #fd7b48; margin-top: 0.20rem">身份证正面</div>-->
           </div>
-          <div class="main-id-picture" style="border: 0">
+          <!--<div class="main-id-picture" style="border: 0">
             <img style="width: 100%; height: 100%" src="../../assets/person/idtify.png"/>
-          </div>
+          </div>-->
+          <div class="uploadPicture" @click="uploadPicture1">+上传照片</div>
         </div>
         <div class="main-id-top">
           <div class="main-id-picture">
@@ -65,11 +67,13 @@
               :maxUploadNumber="1"
               @uploadItems="getInputItems"
               @uploadUrls="getInput"
+              ref="child"
             > </upload>
           </div>
-          <div class="main-id-picture" style="border: 0">
+          <!--<div class="main-id-picture" style="border: 0">
             <img style="width: 100%; height: 100%" src="../../assets/person/_idtify.png"/>
-          </div>
+          </div>-->
+          <div class="uploadPicture" @click="uploadPicture2">+上传照片</div>
         </div>
       </div>
     </div>
@@ -89,11 +93,13 @@
             :maxUploadNumber="1"
             @uploadItems="getInputItems"
             @uploadUrls="getInput"
+            ref="child"
           > </upload>
         </div>
-        <div class="main-hand-item" style="border: 0">
+       <!-- <div class="main-hand-item" style="border: 0">
           <img style="width: 100%; height: 100%" src="../../assets/person/handid.png"/>
-        </div>
+        </div>-->
+        <div class="uploadPicture" @click="uploadPicture2">+上传照片</div>
       </div>
     </div>
     <div class="main-protocol">
@@ -127,9 +133,9 @@ export default {
       picHeight: '1.8rem', // 图片宽度
       picWidth2: '4.5rem',
       picHeight2: '2.8rem',
-      imgSrc1: require('../../common/img/idenZ.png'),
-      imgSrc2: require('../../common/img/idenF.png'),
-      imgSrc3: require('../../common/img/idenHand.png'),
+      imgSrc1: require('../../assets/person/idtify.png'),
+      imgSrc2: require('../../assets/person/_idtify.png'),
+      imgSrc3: require('../../assets/person/handid.png'),
     }
   },
   methods: {
@@ -176,6 +182,12 @@ export default {
     getInput(b){
       console.log('b', b)
     },
+    uploadPicture1 () {
+      this.$refs.child.addItem()
+    },
+    uploadPicture2 () {
+      this.$refs.child.addItem()
+    }
   }
 }
 </script>
@@ -195,10 +207,12 @@ export default {
     border-bottom: 1px solid #eaeaea;
   }
   .main-identify {
-    padding: 0.10rem 0.30rem;
+    padding: 0.10rem 0;
     font-size: 0.32rem;
   }
   .main-identify-item {
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid #eaeaea;
     margin-top: 0.20rem;
     display: flex;
     justify-content: space-around;
@@ -208,9 +222,9 @@ export default {
     text-align: left;
   }
   .main-identify-item input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 0;
     width: 3.4rem;
+    color: #cdcdcd;
   }
   .main-identify-item-num {
     width: 1.2rem;
@@ -237,6 +251,7 @@ export default {
   .main-id-top {
     display: flex;
     justify-content: space-around;
+    align-items: center;
   }
   .main-hand {
     padding: 0.25rem;
@@ -274,5 +289,14 @@ export default {
     font-size: 0.20rem;
     color: #ff510d;
     padding: 0.25rem;
+  }
+  .uploadPicture {
+    width: 2.8rem;
+    height: 0.6rem;
+    border: 1px solid #ff7500;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 0.6rem;
+    color: #ff7500;
   }
 </style>

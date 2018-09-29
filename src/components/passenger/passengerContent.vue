@@ -51,14 +51,21 @@
           <img src="../../assets/passenger/date.png"/>
           <span>出发日期</span>
         </div>
-        <div>9月20日</div>
+        <div @click="showPopup = true">{{ datetime }}</div>
+        <div v-transfer-dom>
+          <popup v-model="showPopup">
+            <datetime-view v-model="datetime"></datetime-view>
+          </popup>
+        </div>
       </div>
       <div class="dateStart">
         <div>
           <img src="../../assets/passenger/time.png"/>
           <span>出发时间</span>
         </div>
-        <div>23:20</div>
+        <div>
+          <datetime v-model="nowTime" format="HH:mm"></datetime>
+        </div>
       </div>
       <div class="dateStart">
         <div>
@@ -72,7 +79,9 @@
           <img src="../../assets/passenger/phone.png"/>
           <span>手机号码</span>
         </div>
-        <div>18595836173</div>
+        <div>
+          <input style="text-align: right" type="text" placeholder="请输入手机号码"/>
+        </div>
       </div>
       <div class="dateStart">
         <div>
@@ -109,12 +118,19 @@
 </template>
 
 <script>
-import { Actionsheet } from 'vux'
+import { Actionsheet, DatetimeView, Popup, TransferDom, Datetime  } from 'vux'
 
 export default {
   name: 'passengerContent',
   components: {
-    Actionsheet
+    Actionsheet,
+    DatetimeView,
+    Popup,
+    TransferDom,
+    Datetime
+  },
+  directives: {
+    TransferDom
   },
   data () {
     return {
@@ -128,10 +144,17 @@ export default {
       perNum: 1,
       startPlace: '郑州',
       endPlace: '',
-      check: true
+      check: true,
+      datetime: '2017-10-24',
+      showPopup: false,
+
+      nowTime: '12:22'
     }
   },
   methods: {
+    dateClick () {
+
+    },
     yesOrNo (val) {
       this.tabIndex = val
     },

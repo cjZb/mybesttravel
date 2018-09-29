@@ -62,7 +62,9 @@
 
         this.tabIndex = val
 
-        if (this.place === 'startPlace') {
+        this.$router.push({path: '/', query: {value: val}})
+
+       /* if (this.place === 'startPlace') {
 
           this.$router.push({path: '/', query: {value1: val}})
 
@@ -70,7 +72,7 @@
 
           this.$router.push({path: '/', query: {value2: val}})
 
-        }
+        }*/
       }
     }
   }

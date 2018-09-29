@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "vue": "^2.5.2",
+    "vue-carousel": "^0.14.0",
     "vue-router": "^3.0.1",
     "vue2-toast": "^2.0.2",
     "vux": "^2.9.2",

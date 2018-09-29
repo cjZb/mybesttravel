@@ -11,11 +11,11 @@
       <div class="main-identify">
         <div class="main-identify-item">
           <div>品牌车型</div>
-          <input type="text"/>
+          <input type="text" placeholder="请输入您的品牌车型"/>
         </div>
         <div class="main-identify-item">
           <div>车牌号</div>
-          <input type="text"/>
+          <input type="text" placeholder="请输入您的车牌号"/>
         </div>
       </div>
     </div>
@@ -33,11 +33,13 @@
             :maxUploadNumber="1"
             @uploadItems="getInputItems"
             @uploadUrls="getInput"
+            ref="child"
           > </upload>
         </div>
-        <div class="main-hand-item" style="border: 0">
+       <!-- <div class="main-hand-item" style="border: 0">
           <img style="width: 100%; height: 100%" src="../../assets/person/example.png"/>
-        </div>
+        </div>-->
+        <div class="uploadPicture" @click="uploadPicture1">+上传照片</div>
       </div>
     </div>
     <div class="main-body">
@@ -54,11 +56,13 @@
             :maxUploadNumber="1"
             @uploadItems="getInputItems"
             @uploadUrls="getInput"
+            ref="child"
           > </upload>
         </div>
-        <div class="main-hand-item" style="border: 0">
+       <!-- <div class="main-hand-item" style="border: 0">
           <img style="width: 100%; height: 100%" src="../../assets/person/drive.png"/>
-        </div>
+        </div>-->
+        <div class="uploadPicture" @click="uploadPicture2">+上传照片</div>
       </div>
     </div>
     <div class="main-protocol">
@@ -86,8 +90,8 @@
       return {
         picWidth2: '4.5rem',
         picHeight2: '2.8rem',
-        imgSrc1: require('../../common/img/goid.png'),
-        imgSrc2: require('../../common/img/driveid.png'),
+        imgSrc1: require('../../assets/person/example.png'),
+        imgSrc2: require('../../assets/person/drive.png'),
         check: true, // 是否选择协议
       }
     },
@@ -109,6 +113,12 @@
       getInput(b){
         console.log('b', b)
       },
+      uploadPicture1 () {
+        this.$refs.child.addItem()
+      },
+      uploadPicture2 () {
+        this.$refs.child.addItem()
+      }
     }
   }
 </script>
@@ -128,22 +138,24 @@
     border-bottom: 1px solid #eaeaea;
   }
   .main-identify {
-    padding: 0.10rem 0.30rem;
+    padding: 0.10rem 0;
     font-size: 0.32rem;
   }
   .main-identify-item {
     margin-top: 0.20rem;
+    padding-bottom: 0.2rem;
     display: flex;
     justify-content: space-around;
+    border-bottom: 1px solid #eaeaea;
   }
   .main-identify-item > div {
     width: 1.7rem;
     text-align: left;
   }
   .main-identify-item input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 0;
     width: 3.4rem;
+    color: #cdcdcd;
   }
   .main-hand {
     padding: 0.25rem;
@@ -181,5 +193,14 @@
     font-size: 0.20rem;
     color: #ff510d;
     padding: 0.25rem;
+  }
+  .uploadPicture {
+    width: 2.8rem;
+    height: 0.6rem;
+    border: 1px solid #ff7500;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 0.6rem;
+    color: #ff7500;
   }
 </style>
