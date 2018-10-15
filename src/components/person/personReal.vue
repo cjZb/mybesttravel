@@ -47,7 +47,7 @@
               :maxUploadNumber="1"
               @uploadItems="getInputItems"
               @uploadUrls="getInput"
-              ref="child"
+              ref="child1"
             > </upload>
             <!--<div style="color: #fd7b48; margin-top: 0.20rem">身份证正面</div>-->
           </div>
@@ -67,7 +67,7 @@
               :maxUploadNumber="1"
               @uploadItems="getInputItems"
               @uploadUrls="getInput"
-              ref="child"
+              ref="child2"
             > </upload>
           </div>
           <!--<div class="main-id-picture" style="border: 0">
@@ -93,13 +93,13 @@
             :maxUploadNumber="1"
             @uploadItems="getInputItems"
             @uploadUrls="getInput"
-            ref="child"
+            ref="child3"
           > </upload>
         </div>
        <!-- <div class="main-hand-item" style="border: 0">
           <img style="width: 100%; height: 100%" src="../../assets/person/handid.png"/>
         </div>-->
-        <div class="uploadPicture" @click="uploadPicture2">+上传照片</div>
+        <div class="uploadPicture" @click="uploadPicture3">+上传照片</div>
       </div>
     </div>
     <div class="main-protocol">
@@ -183,10 +183,13 @@ export default {
       console.log('b', b)
     },
     uploadPicture1 () {
-      this.$refs.child.addItem()
+      this.$refs.child1.addItem()
     },
     uploadPicture2 () {
-      this.$refs.child.addItem()
+      this.$refs.child2.addItem()
+    },
+    uploadPicture3 () {
+      this.$refs.child3.addItem()
     }
   }
 }

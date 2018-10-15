@@ -1,6 +1,6 @@
 <template>
   <div class="main-top">
-    <div style="display: flex; align-items: center">
+    <div style="display: flex; align-items: center" @click="leftarrow">
       <img style="width: 0.17rem; height: 0.31rem" src="./img/leftarrow.png"/>
     </div>
     <div>
@@ -12,7 +12,12 @@
 
 <script>
   export default {
-    name: 'mheader'
+    name: 'mheader',
+    methods: {
+      leftarrow () {
+        this.$router.go(-1)
+      }
+    }
   }
 </script>
 

@@ -11,11 +11,11 @@
       <div class="main-identify">
         <div class="main-identify-item">
           <div>品牌车型</div>
-          <input type="text" placeholder="请输入您的品牌车型"/>
+          <input v-model="car_type" type="text" placeholder="请输入您的品牌车型"/>
         </div>
         <div class="main-identify-item">
           <div>车牌号</div>
-          <input type="text" placeholder="请输入您的车牌号"/>
+          <input v-model="car_number" type="text" placeholder="请输入您的车牌号"/>
         </div>
       </div>
     </div>
@@ -31,9 +31,9 @@
             :height="picHeight2"
             :imgSrc="imgSrc1"
             :maxUploadNumber="1"
-            @uploadItems="getInputItems"
-            @uploadUrls="getInput"
-            ref="child"
+            @uploadItems="getInputItems1"
+            @uploadUrls="getInput1"
+            ref="child1"
           > </upload>
         </div>
        <!-- <div class="main-hand-item" style="border: 0">
@@ -54,9 +54,9 @@
             :height="picHeight2"
             :imgSrc="imgSrc2"
             :maxUploadNumber="1"
-            @uploadItems="getInputItems"
-            @uploadUrls="getInput"
-            ref="child"
+            @uploadItems="getInputItems2"
+            @uploadUrls="getInput2"
+            ref="child2"
           > </upload>
         </div>
        <!-- <div class="main-hand-item" style="border: 0">
@@ -79,6 +79,7 @@
 <script>
   import Upload from "@/common/upload"
   import Mheader from '@/common/mheader'
+  import { driver_validate } from '@/api/allapi'
 
   export default {
     name: 'driverAuth',
@@ -93,6 +94,11 @@
         imgSrc1: require('../../assets/person/example.png'),
         imgSrc2: require('../../assets/person/drive.png'),
         check: true, // 是否选择协议
+
+        car_number: '',
+        car_type: '',
+        driver_card: '',  // 驾驶证
+        driving_card: '', // 行驶证
       }
     },
     methods: {
@@ -103,22 +109,95 @@
 
         if (this.check) {
 
-          this.$toast.center('暂时无法认证')
+          // this.$toast.center('暂时无法认证')
+          if (this.car_type === '') {
+
+            this.$toast.center('品牌车型不能为空')
+
+          } else if (this.car_number === '') {
+
+            this.$toast.center('车牌号不能为空')
+
+          } else if (this.driver_card === '') {
+
+            this.$toast.center('请上传驾驶证')
+
+          } else if (this.driving_card === '') {
+
+            this.$toast.center('请上传行驶证')
+
+          } else {
+
+            this._driver_validate()
+          }
 
         }
       },
-      getInputItems(a){
-        console.log('a', a)
+      getInputItems1(a){
+
+        setTimeout(() => this.driving_card = a[0], 500)
+
+        console.log('行驶证aaa', a)
+
       },
-      getInput(b){
+      getInput1(b){
+
         console.log('b', b)
+
+      },
+      getInputItems2(a){
+
+        setTimeout(() => this.driver_card = a[0], 500)
+
+        console.log('驾驶证aaa', a)
+
+      },
+      getInput2(b){
+
+        console.log('b', b)
+
       },
       uploadPicture1 () {
-        this.$refs.child.addItem()
+        this.$refs.child1.addItem()
       },
       uploadPicture2 () {
-        this.$refs.child.addItem()
-      }
+        this.$refs.child2.addItem()
+      },
+      _driver_validate () {
+
+        driver_validate ({
+          driver_card: this.driver_card,  // 驾驶证
+          driving_card: this.driving_card, // 行驶证
+          car_type: this.car_type,  // 车型
+          car_number: this.car_number, // 车牌号
+        })
+          .then(res => {
+
+            this.$toast.center(res)
+
+            this.$router.push('/personCenter')
+
+            console.log('车主认证', res)
+
+          })
+      },
+      /*test_driver() {
+        let config = {
+          headers: {'Content-Type': 'multipart/form-data'}
+        }
+        let param = new FormData()  // 创建form对象
+        param.append('file', this.ssss)  // 通过append向form对象添加数据
+        this.axios.post('http://192.168.0.165/home/Driver/driver_validate',{
+          driver_card: this.driver_card,  // 驾驶证
+          driving_card: this.ssss, // 行驶证
+          car_type: this.car_type,  // 车型
+          car_number: this.car_number, // 车牌号
+        }, config) .then(res => {
+
+          console.log('车主认证', res)
+
+        })
+      }*/
     }
   }
 </script>

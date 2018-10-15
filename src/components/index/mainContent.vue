@@ -5,14 +5,13 @@
         <img style="width: 0.30rem; height: 0.30rem" src="../../assets/index/news.png"/>
       </div>
       <div style="color: #ff682d">美美出行</div>
-      <div @click="selectArea">
+      <div>
         <img style="width: 0.22rem; height: 0.26rem" src="../../assets/index/position.png"/>
         <span style="margin: 0 0.2rem">{{ city }}</span>
-        <img style="width: 0.18rem; height: 0.1rem" src="../../assets/index/daosanjiao.png"/>
+        <!--<img style="width: 0.18rem; height: 0.1rem" src="../../assets/index/daosanjiao.png"/>-->
       </div>
     </div>
     <div class="slider" style="background-color: #ffffff">
-      <!--<img style="width: 100%; height: 3rem" src="../../assets/index/slider.png"/>-->
       <carousel
         :autoplay="true"
         :speed="500"
@@ -32,18 +31,8 @@
         </slide>
       </carousel>
     </div>
-    <!--<div class="main-travel">
-      <div class="main-travel-l">
-        <div ref="place1" @click="startClick">{{ startPlace }}</div>
-        <div @click="changeArea">
-          <img style="width: 0.57rem; height: 0.35rem" src="../../assets/index/line.png"/>
-        </div>
-        <div ref="place2" @click="endClick">{{ endPlace }}</div>
-      </div>
-      <div class="main-travel-r" @click="searchCar">查询车辆</div>
-    </div>-->
     <div class="main-tab">
-      <div class="main-tab-item" v-for="(item, index) in arrTab" :key="index" @click="tabItem">
+      <div class="main-tab-item" v-for="(item, index) in arrTab" :key="index" @click="tabItem(index)">
         <div>
           <img style="width: 0.8rem; height: 0.8rem" :src="item.img"/>
         </div>
@@ -56,18 +45,18 @@
         <div>立即出行</div>
       </div>
       <div class="main-line" :style="{overflow: active === 'loadmore' ? 'auto' : 'hidden'}">
-        <div class="main-line-item" v-for="item in arr.length" :key="'c' + item" @click="selectCar">
+        <div class="main-line-item" v-for="item in arrcity" :key="item.id" @click="selectCar(item.start_city, item.end_city, item.start_city_id, item.end_city_id)">
           <div class="main-line-item-l">
-            <div>郑州</div>
+            <div>{{item.start_city}}</div>
             <div>
               <img style="width: 0.34rem; height: 0.15rem" src="../../assets/index/arrow.png"/>
             </div>
-            <div>武汉</div>
+            <div>{{item.end_city}}</div>
           </div>
-          <div class="main-line-item-r" style="color: #ff510d">66个</div>
+          <div class="main-line-item-r" style="color: #ff510d">{{item.count}}个</div>
         </div>
       </div>
-      <div class="loading" v-if="active === '' && arr.length > 12" @click="loadMore">查看更多</div>
+      <div class="loading" v-if="active === ''" @click="loadMore">查看更多</div>
     </div>
     <div class="main-quick">
       <div class="main-go">
@@ -76,6 +65,7 @@
       </div>
       <!--快捷送货-->
       <div class="main-quick-content">
+        <div style="font-size: 0.32rem; padding: 0.2rem 0; text-align: center">累计送货<span style="color: #ff510d">288888</span>单</div>
         <scroller lock-y :scrollbar-x="false">
           <div style="width: 16rem; display: flex" >
             <div v-for="(item, index) in 3" :key="index" class="main-scoller" @click="deliverClick">
@@ -119,7 +109,7 @@
             </div>
           </div>
         </scroller>
-        <div style="font-size: 0.32rem; padding: 0.2rem 0; text-align: center">累计送货<span style="color: #ff510d">288888</span>件</div>
+        <div class="loading" >立即下单</div>
       </div>
       <!--快捷送货end-->
     </div>
@@ -131,15 +121,17 @@
       <div class="main-shop-content">
         <div class="main-shop-content-item" v-for="(item, index) in arrShop" :key="index">
           <div>
-            <img style="width: 2.4rem; height: 2rem; border-radius: 10px" :src="item.img"/>
+            <img style="width: 3rem; height: 3rem; border-radius: 10px" :src="item.img"/>
           </div>
           <div style="font-size: 0.28rem; margin-top: 0.2rem">{{ item.name }}</div>
-          <div style="color: #d92704; margin: 0.2rem 0">
-            <span style="font-size: 0.26rem">￥</span>
-            <span style="font-size: 0.36rem">9.9</span>
-            <span style="font-size: 0.26rem">起</span>
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <div style="color: #d92704; margin: 0.2rem 0">
+              <span style="font-size: 0.26rem">￥</span>
+              <span style="font-size: 0.36rem">9.9</span>
+              <span style="font-size: 0.26rem; color: #999999;">￥<span style=" text-decoration: line-through">12.9</span></span>
+            </div>
+            <div class="main-shop-detail" @click="lookDetail">查看详情</div>
           </div>
-          <div class="main-shop-detail" @click="lookDetail">查看详情</div>
         </div>
       </div>
     </div>
@@ -149,6 +141,7 @@
 <script>
 import { Scroller, Rater } from 'vux'
 import { Carousel, Slide } from 'vue-carousel'
+import { cityLine } from '@/api/allapi'
 
 export default {
   name: 'mainContent',
@@ -160,14 +153,14 @@ export default {
   },
   data () {
     return {
-      arr: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      arrcity: [],
       active: '',
       /*startPlace: '郑州',
       endPlace: '濮阳',*/
 
       arrTab: [
         {img: require('../../assets/index/tab_car.png'), name: '拼车出行'},
-        {img: require('../../assets/index/tab_pos.png'), name: '定向找车'},
+        {img: require('../../assets/index/tab_pos.png'), name: '立即约车'},
         {img: require('../../assets/index/tab_driver.png'), name: '司机发布'},
         {img: require('../../assets/index/tab_person.png'), name: '实名认证'},
         {img: require('../../assets/index/tab_notify.png'), name: '系统通知'},
@@ -198,52 +191,12 @@ export default {
 
     }
 
-    /*if (this.$route.query.value1) {
-
-      this.startPlace = this.$route.query.value1
-
-      localStorage.setItem('startPlace', this.startPlace)
-
-      this.endPlace = localStorage.getItem('endPlace')
-
-    } else if (this.$route.query.value2) {
-
-      this.endPlace = this.$route.query.value2
-
-      localStorage.setItem('endPlace', this.endPlace)
-
-      this.startPlace = localStorage.getItem('startPlace')
-
-    } else {
-
-      localStorage.setItem('startPlace', this.startPlace)
-
-      localStorage.setItem('endPlace', this.endPlace)
-
-    }*/
+    this._cityLine()
 
   },
   methods: {
-    /*searchCar () {
-      this.$toast.center('暂不可查询')
-    },*/
-
-   /* changeArea () {
-      let temp
-      temp = this.$refs.place1.innerHTML
-      this.$refs.place1.innerHTML = this.$refs.place2.innerHTML
-      this.$refs.place2.innerHTML = temp
-    },*/
-
-    /*startClick () {
-      // flag区分用户是点击出发地还是目的地
-      this.$router.push({path: '/cityList', query: {flag: 'startPlace'}})
-    },
-    endClick () {
-      this.$router.push({path: '/cityList', query: {flag: 'endPlace'}})
-    }*/
-    selectCar () {
-      this.$toast.center('暂不可选择')
+    selectCar (start, end, startId, endId) {
+      this.$router.push({path: '/lookowner', query: {start: start, end: end, startId: startId, endId: endId}})
     },
     message () {
       this.$toast.center('暂无消息')
@@ -253,15 +206,42 @@ export default {
     },
     loadMore () {
       this.active = 'loadmore'
+      this.$router.push({path: '/goTravel', query: {}})
     },
-    tabItem () {
-      this.$toast.center('暂未开放')
+    tabItem (val) {
+
+      if (val === 0) {
+
+        this.$router.push('/goTravel')
+
+      } else if (val === 1) {
+
+        this.$router.push('/passenger')
+
+      }  else if (val === 2) {
+
+        this.$router.push('/driverPublish')
+
+      }
+
     },
     lookDetail () {
       this.$toast.center('暂不可查看详情')
     },
     deliverClick () {
       this.$toast.center('暂无内容')
+    },
+    _cityLine () {
+      cityLine().then( res => {
+
+        if (res) {
+
+          this.arrcity = res
+
+        }
+
+        console.log('城市列表', res)
+      })
     }
   }
 }
@@ -279,30 +259,7 @@ export default {
     font-size: 0.30rem;
     background-color: #ffffff;
   }
-  /*.main-travel {
-    margin: 0.30rem 0;
-    border: 1px solid #f1d0c3;
-    border-radius: 5px;
-    display: flex;
-    background-color: #ff682d;
-  }
-  .main-travel-l {
-    padding: 0.20rem;
-    width: 4.95rem;
-    text-align: center;
-    font-size: 0.50rem;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-around;
-  }
-  .main-travel-r {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 2rem;
-    font-size: 0.32rem;
-    color: #ffffff;
-  }*/
+
   .main-tab {
     margin: 0.1rem 0;
     padding: 0.1rem 0.75rem;
@@ -334,7 +291,7 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    height: 5.00rem;
+    /*height: 4.00rem;*/
   }
   .main-line-item {
     margin-top: 0.25rem;
@@ -357,11 +314,15 @@ export default {
     text-align: center;
   }
   .loading {
-    font-size: 0.32rem;
-    font-weight: bold;
-    color: #ff510d;
-    margin: 0.20rem 0 0.1rem 0;
+    font-size: 0.24rem;
+    line-height: 0.4rem;
+    margin: 0.20rem auto;
     text-align: center;
+    width: 1.40rem;
+    height: 0.4rem;
+    color: #ffffff;
+    background-color: #ff510d;
+    border-radius: 5px;
   }
   .main-quick, .main-shop {
     margin: 0.2rem 0;
@@ -383,6 +344,7 @@ export default {
     text-align: right;
     padding: 0.2rem;
   }
+
   .main-shop-content {
     display: flex;
     flex-wrap: wrap;
@@ -390,7 +352,7 @@ export default {
     padding: 0 0.3rem;
   }
   .main-shop-content-item {
-    margin: 0.2rem 1.2rem 0 0;
+    margin: 0.2rem 0.1rem 0 0;
   }
   .main-shop-content-item:nth-child(2n+2) {
     margin-right: 0;
@@ -403,5 +365,6 @@ export default {
     line-height: 0.4rem;
     border-radius: 5px;
     background-color: #ff510d;
+    margin-left: 0.1rem;
   }
 </style>

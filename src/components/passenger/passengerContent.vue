@@ -1,51 +1,34 @@
 <template>
   <div>
-    <div class="main-top">
-      <div @click="home"><i class="iconfont icon-shouye"></i></div>
-      <div style="color: #ff682d">乘客发布</div>
-      <div @click="message">
-        <img style="width: 0.30rem; height: 0.30rem" src="../../assets/index/news.png"/>
-      </div>
-    </div>
-    <div style="background-color: #ffffff; margin-top: 0.10rem">
-      <div class="main-go">
-        <div>乘客发布</div>
-        <div style="width: 2px; height: 0.25rem; background-color: #ff682d; margin-left: 5px;"></div>
-      </div>
-      <div style="display: flex">
-        <div>
-          <div class="main-start">
-            <img src="../../assets/passenger/start.png"/>
-            <span>{{ startPlace }}</span>
-          </div>
-          <div class="main-end">
-            <img src="../../assets/passenger/end.png"/>
-            <input v-model="endPlace" style="color: #999999; width: 4rem;" type="text" placeholder="去哪儿"/>
-          </div>
+    <div style="background-color: #ffffff">
+      <div style="display: flex; justify-content: center; font-size: 0.4rem">
+        <div class="main-start" @click="startClick">
+          <img src="../../assets/passenger/start.png"/>
+          <span>{{ startPlace }}</span>
         </div>
         <div class="main-arrow" @click="arrowClick">
-          <img style="width: 0.32rem; height: 0.46rem" src="../../assets/passenger/colarrow.png"/>
+          <img style="width: 0.43rem; height: 0.32rem" src="../../assets/passenger/doubleLine.png"/>
+        </div>
+        <div class="main-end" @click="endClick">
+          <img src="../../assets/passenger/end.png"/>
+          <span>{{ endPlace }}</span>
         </div>
       </div>
-      <div class="main-person">
-        <div class="main-person-l">
-          <div @click="selectNum">
-            <img style="width: 0.19rem; height: 0.23rem; margin-right: 0.10rem" src="../../assets/passenger/perL.png"/>
-            <span style="font-size: 0.28rem; color: #333333">{{ perNum }}人</span>
-          </div>
-          <actionsheet
-             v-model="show1"
-             :menus="menu"
-             theme="ios"
-             @on-click-menu="menuClick"
-          ></actionsheet>
+      <div class="dateStart">
+        <div>
+          <img style="width: 0.19rem; height: 0.23rem; margin-right: 0.20rem" src="../../assets/passenger/perL.png"/>
+          <span>人数</span>
         </div>
-        <div class="main-person-r">
-          <img style="width: 0.28rem; height: 0.28rem; margin-right: 0.10rem" src="../../assets/passenger/perY.png"/>
-          <span style="font-size: 0.28rem; color: #333333">本人</span>
-          <img style="width: 0.18rem; height: 0.10rem; margin-left: 0.20rem" src="../../assets/passenger/downArrow.png"/>
-        </div>
+        <span @click="selectNum" style="font-size: 0.28rem; color: #333333">{{ perNum }}人</span>
       </div>
+      <!--人数弹窗-->
+      <actionsheet
+        v-model="show1"
+        :menus="menu"
+        theme="ios"
+        @on-click-menu="menuClick"
+      ></actionsheet>
+      <!--end-->
       <div class="dateStart">
         <div>
           <img src="../../assets/passenger/date.png"/>
@@ -72,7 +55,7 @@
           <img src="../../assets/passenger/pre.png"/>
           <span>上车地点</span>
         </div>
-        <div style="width: 5rem; text-align: right" class="re-overFlowes">郑州绿地缤纷城绿地之窗景峰座</div>
+        <div style="width: 5rem; text-align: right" class="re-overFlowes" @click="startAddress">{{ start_address }}</div>
       </div>
       <div class="dateStart">
         <div>
@@ -80,7 +63,7 @@
           <span>手机号码</span>
         </div>
         <div>
-          <input style="text-align: right" type="text" placeholder="请输入手机号码"/>
+          <span>{{cus_phone}}</span>
         </div>
       </div>
       <div class="dateStart">
@@ -89,18 +72,39 @@
           <span>是否加急</span>
         </div>
         <div style="display: flex">
-          <div style="margin-right: 0.60rem" @click="yesOrNo(0)">
-            <img style="width: 0.25rem; height: 0.25rem" :src="tabIndex === 0 ? require('../../assets/passenger/yes.png') : require('../../assets/passenger/no.png')"/>
+          <div style="margin-right: 0.60rem" @click="yesOrNo(1)">
+            <img style="width: 0.25rem; height: 0.25rem" :src="tabIndex === 1 ? require('../../assets/passenger/yes.png') : require('../../assets/passenger/no.png')"/>
             <span>是</span>
           </div>
-          <div @click="yesOrNo(1)">
-            <img style="width: 0.25rem; height: 0.25rem" :src="tabIndex === 1 ? require('../../assets/passenger/yes.png') : require('../../assets/passenger/no.png')"/>
+          <div @click="yesOrNo(0)">
+            <img style="width: 0.25rem; height: 0.25rem" :src="tabIndex === 0 ? require('../../assets/passenger/yes.png') : require('../../assets/passenger/no.png')"/>
             <span>否</span>
           </div>
         </div>
       </div>
+      <!--加急说明-->
+      <div>
+        <x-dialog v-model="introduce">
+          <div class="dlog">
+            <div class="dlog-title">加急说明</div>
+            <div class="dlog-content">
+              <p>
+                拼友提交预约请求后，系统会持续匹配与您出行时 相符的车主，并实时通知给您。拼友提交预约请求后 ，系统会持续匹配与您出行时
+                拼友提交预约请求后，系统会持续匹配与您出行时 相符的车主，并实时通知给您。拼友提交预约请求后 ，系统会持续匹配与您出行时
+              </p>
+            </div>
+            <div class="dlog-no">
+              <input type="checkbox"/>
+              <span>不再提示</span>
+            </div>
+            <div class="dlog-btn" @click="iknow">我知道了</div>
+          </div>
+        </x-dialog>
+      </div>
+      <!--end-->
     </div>
     <div class="main-pay">
+      <span v-if="isJiaji" style="font-size: 0.22rem; color: #FF510D; margin-right: 0.2rem">(另外需付加急费用10元)</span>
       <span style="font-size: 0.26rem; color: #333333">预计支付<span class="main-pay-num">198</span>元</span>
     </div>
     <div class="main-protocol">
@@ -118,7 +122,8 @@
 </template>
 
 <script>
-import { Actionsheet, DatetimeView, Popup, TransferDom, Datetime  } from 'vux'
+import { Actionsheet, DatetimeView, Popup, TransferDom, Datetime, XDialog } from 'vux'
+import { back, cus_fabu_yue } from '@/api/allapi'
 
 export default {
   name: 'passengerContent',
@@ -127,7 +132,8 @@ export default {
     DatetimeView,
     Popup,
     TransferDom,
-    Datetime
+    Datetime,
+    XDialog
   },
   directives: {
     TransferDom
@@ -143,20 +149,80 @@ export default {
       },
       perNum: 1,
       startPlace: '郑州',
-      endPlace: '',
+      endPlace: '濮阳',
       check: true,
       datetime: '2017-10-24',
       showPopup: false,
 
-      nowTime: '12:22'
+      nowTime: '12:22',
+      isJiaji: false,
+      introduce: false, // 加急说明
+
+      cus_phone: '',
+      start_address: '中兴路心怡路交叉口易元国际',
+      start_city_id: '',
+      end_city_id: '',
+    }
+  },
+  mounted () {
+
+    this.start_city_id = this.$route.query.startId
+
+    this.end_city_id = this.$route.query.endId
+
+    if (this.$route.query.value1) {
+
+      this.startPlace = this.$route.query.value1
+
+      localStorage.setItem('startPlace', this.startPlace)
+
+      localStorage.setItem('start_city_id', this.start_city_id)
+
+      this.endPlace = localStorage.getItem('endPlace')
+
+    } else if (this.$route.query.value2) {
+
+      this.endPlace = this.$route.query.value2
+
+      localStorage.setItem('endPlace', this.endPlace)
+
+      localStorage.setItem('end_city_id', this.end_city_id)
+
+      this.startPlace = localStorage.getItem('startPlace')
+
+    } else {
+
+      this._back()
+
     }
   },
   methods: {
-    dateClick () {
+    startAddress () {
+      this.$toast.center('暂不可选择地址')
+    },
+    startClick () {
+      // flag区分用户是点击出发地还是目的地
+      this.$router.push({path: '/cityList', query: {flag: 'startPlace', from: '乘客发布'}})
+    },
 
+    endClick () {
+      this.$router.push({path: '/cityList', query: {flag: 'endPlace', from: '乘客发布'}})
     },
     yesOrNo (val) {
       this.tabIndex = val
+      if (val === 0) {
+
+        this.isJiaji = false
+
+        this.introduce = false
+
+      } else {
+
+        this.isJiaji = true
+
+        this.introduce = true
+
+      }
     },
     home () {
       this.$toast.center('暂不知去向')
@@ -193,7 +259,9 @@ export default {
 
       if (this.check) {
 
-        if (this.endPlace !== '') {
+        this._cus_fabu_yue()
+
+       /* if (this.endPlace !== '') {
 
           this.$toast.center('暂不支持购票')
 
@@ -201,70 +269,84 @@ export default {
 
           this.$toast.center('请输入目的地')
 
-        }
+        }*/
       }
+    },
+    iknow () {
+      this.introduce = false
+    },
+    _back () {
+      back().then(res => {
+
+        this.cus_phone = res.cus_phone
+
+        this.startPlace = res.yue_city_info.start_city
+
+        this.start_city_id = res.yue_city_info[0].start_city_id
+
+        this.endPlace = res.yue_city_info.end_city
+
+        this.end_city_id = res.yue_city_info[0].end_city_id
+
+        this.cus_phone = this.cus_phone.substring(0, 3) + '****' + this.cus_phone.substring(7, 11)
+
+        localStorage.setItem('startPlace', this.startPlace)
+
+        localStorage.setItem('start_city_id', this.start_city_id)
+
+        localStorage.setItem('endPlace', this.endPlace)
+
+        localStorage.setItem('end_city_id', this.end_city_id)
+
+        console.log('backback', res)
+
+      })
+    },
+    _cus_fabu_yue () {
+      let start_time = new Date(this.datetime + ' ' + this.nowTime).getTime()
+      cus_fabu_yue({
+        start_city_id: localStorage.getItem('start_city_id'),
+        end_city_id: localStorage.getItem('end_city_id'),
+        start_time: start_time,
+        customer_numbers: this.perNum,
+        start_address: this.start_address,
+        is_hurry: this.tabIndex,
+      })
+        .then(res => {
+
+          this.$toast.center(res)
+
+          this.$router.push('/personCenter')
+
+          console.log('乘客发布', res)
+
+        })
     }
   }
 }
 </script>
 
 <style scoped>
-  .main-top {
-    padding: 0.25rem;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.30rem;
-    background-color: #ffffff;
-  }
-  .main-go {
-    display: flex;
-    font-size: 0.26rem;
-    font-weight: bold;
-    color: #333333;
-    align-items: center;
-    padding: 0.20rem 0.25rem;
-    border-bottom: 1px solid #eaeaea;
-  }
   .main-start {
     padding: 0.35rem 0.25rem;
-    width: 5.8rem;
-    border-bottom: 1px solid #e7e7e7;
     display: flex;
     align-items: center
   }
   .main-end {
     padding: 0.35rem 0.25rem;
-    width: 5.8rem;
     display: flex;
     align-items: center
   }
   .main-start img, .main-end img {
     width: 0.30rem;
     height: 0.30rem;
-    margin-right: 0.10rem;
+    margin: 0 0.10rem;
   }
   .main-arrow {
     width: 1.00rem;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  .main-person {
-    border-top: 1px solid #e7e7e7;
-    border-bottom: 1px solid #e7e7e7;
-    display: flex;
-  }
-  .main-person-l {
-    width: 3.7rem;
-    padding: 0.35rem 0;
-    text-align: center;
-    border-right: 1px solid #e7e7e7;
-
-  }
-  .main-person-r {
-    width: 3.7rem;
-    padding: 0.35rem 0;
-    text-align: center;
   }
   .dateStart {
     padding: 0.35rem 0.25rem;
@@ -307,5 +389,33 @@ export default {
     font-size: 0.26rem;
     padding: 0.20rem 0.3rem;
     color: #666;
+  }
+  .dlog {
+    border-radius: 5px;
+    padding: 0.3rem;
+  }
+  .dlog-title {
+    font-size: 0.4rem;
+    font-weight: bold;
+    color: #FF510D;
+  }
+  .dlog-content {
+    font-size: 0.26rem;
+    font-weight: 300;
+    margin: 0.2rem 0;
+  }
+  .dlog-no {
+    font-size: 0.28rem;
+    text-align: left;
+    margin-top: 2rem;
+    margin-bottom: 0.3rem;
+  }
+  .dlog-btn {
+    border-radius: 0.1rem;
+    color: #ffffff;
+    height: 0.68rem;
+    line-height: 0.68rem;
+    text-align: center;
+    background-color: #FF510D;
   }
 </style>

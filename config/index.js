@@ -10,7 +10,34 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+
+      "/home": {
+        target: "http://192.168.0.165",
+        // logLevel: 'debug',
+        changeOrigin: true,
+      },
+      // "/personally": {
+      //   target: "http://192.168.1.80",
+      //   // target: "http://192.168.1.199:8115",
+      //   changeOrigin: true,
+      // },
+      // "/service": {
+      //   target: "http://192.168.1.80",
+      //   // target: "http://192.168.1.161:8115",
+      //   changeOrigin: true,
+      // },
+      // "/shop": {
+      //   target: "http://192.168.1.80",
+      //   // target: "http://192.168.1.151:8077",
+      //   changeOrigin: true,
+      // },
+      // "/promotion": {
+      //   target: "http://192.168.1.80",
+      //   // target: "http://192.168.1.151:8077",
+      //   changeOrigin: true,
+      // },
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

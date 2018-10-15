@@ -5,7 +5,7 @@
   "author": "zhangbiao",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --hot --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "test": "npm run unit",
@@ -13,6 +13,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "qs": "^6.5.2",
     "vue": "^2.5.2",
     "vue-carousel": "^0.14.0",
     "vue-router": "^3.0.1",
@@ -67,6 +69,7 @@
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^1.1.1",
+    "vue-hot-reload-api": "^2.3.1",
     "vue-jest": "^1.0.2",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",

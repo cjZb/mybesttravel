@@ -5,17 +5,19 @@
         <main-content></main-content>
       </div>
       <div v-if="tabIndex === 1">
-        <passenger-content></passenger-content>
+        <passenger></passenger>
       </div>
-      <div v-if="tabIndex === 2">
-        <driver-content></driver-content>
+     <!-- <div v-if="tabIndex === 2">
+        <get-order></get-order>
       </div>
       <div v-if="tabIndex === 3">
-        <driver-content></driver-content>
-      </div>
+        <get-order></get-order>
+      </div>-->
       <div v-if="tabIndex === 4">
-        <person-real></person-real>
+        <!--<person-real></person-real>-->
         <!--<driver-auth></driver-auth>-->
+        <!--<get-order></get-order>-->
+        <person-center></person-center>
       </div>
     </div>
     <!--底部占位-->
@@ -50,18 +52,20 @@
 
 <script>
 import MainContent from './mainContent'
-import PassengerContent from '../passenger/passengerContent'
-import DriverContent from '../driver/driverContent'
+import Passenger from '../passenger/passenger'
+import GetOrder from '../driver/getOrder'
 import PersonReal from '../person/personReal'
 import DriverAuth from '../person/driverAuth'
+import personCenter from '../person/personCenter'
 
 export default {
   components: {
     MainContent,
-    PassengerContent,
-    DriverContent,
+    Passenger,
+    GetOrder,
     PersonReal,
-    DriverAuth
+    DriverAuth,
+    personCenter
   },
   data () {
     return {
@@ -71,6 +75,15 @@ export default {
   methods: {
     change (val) {
       this.tabIndex = val
+      if (val === 2) {
+
+        this.$toast.center('暂未开放')
+
+      } else if (val === 3) {
+
+        this.$toast.center('暂未开放')
+
+      }
     }
   }
 }

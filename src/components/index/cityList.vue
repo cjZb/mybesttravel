@@ -13,11 +13,13 @@
         <div>选择城市</div>
         <div style="width: 2px; height: 0.25rem; background-color: #ff682d; margin-left: 5px;"></div>
       </div>
-      <div class="main-city" v-for="(item, index) in cityList" :key="index">
-        <div class="main-city-letter">{{ item.letter }}</div>
+      <div class="main-city" v-for="(item, index) in arrCity" :key="index">
+        <div class="main-city-letter" v-if="index === 0" v-for="(item1, index) in item">
+          <div>{{ item1.letter }}</div>
+        </div>
         <div class="main-city-name">
           <div
-            v-for="(item1, index1) in item.cityArr"
+            v-for="(item1, index1) in item"
             :key="index1"
             class="main-city-item"
             @click="cityItem(item1)"
@@ -25,7 +27,9 @@
             backgroundColor: tabIndex === item1 ? '#ff510d' : '#fff',
             borderColor: tabIndex === item1 ? '#ff510d' : '#ccc'
             }"
-          >{{ item1 }}</div>
+          >
+            <div>{{ item1.city_name }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -34,46 +38,102 @@
 
 <script>
   import Mheader from '@/common/mheader'
+  import { citys } from '@/api/allapi'
+  import { sortList} from '../../../static/js/utils'
 
   export default {
     name: 'cityList',
     components: {
-      Mheader
+      Mheader,
+      citys
     },
     data () {
       return {
         tabIndex: '',
         cityList: [
-          {letter: 'A', cityArr: ['郑州1', '安阳2', '郑州3', '安阳4', '郑州5', '安阳6' ]},
+          {letter: 'A', cityArr: ['郑州1', '安阳2', '郑州3', '安阳4', '郑州5', '安阳6']},
           {letter: 'B', cityArr: ['郑州7', '安阳8']},
           {letter: 'C', cityArr: ['郑州9', '安阳10']},
           {letter: 'D', cityArr: ['郑州11', '安阳12']},
           {letter: 'E', cityArr: ['郑州13', '安阳14']},
           {letter: 'F', cityArr: ['郑州15', '安阳16']},
         ],
+        arrCity: [],
         place: '', // 存放地址来源
+        from: '', // 存放页面来源
       }
     },
     mounted () {
       this.place = this.$route.query.flag
+
+      this.from = this.$route.query.from
+
+      this._citys()
     },
     methods: {
       cityItem (val) {
 
         this.tabIndex = val
 
-        this.$router.push({path: '/', query: {value: val}})
+        // this.$router.push({path: '/', query: {value: val}})
 
-       /* if (this.place === 'startPlace') {
+        if (this.from === '乘客发布') {
 
-          this.$router.push({path: '/', query: {value1: val}})
+          if (this.place === 'startPlace') {
 
-        } else if (this.place === 'endPlace') {
+            this.$router.push({path: '/passenger', query: {value1: val.city_name, startId: val.id}})
 
-          this.$router.push({path: '/', query: {value2: val}})
+          } else if (this.place === 'endPlace') {
 
-        }*/
-      }
+            this.$router.push({path: '/passenger', query: {value2: val.city_name, endId: val.id}})
+
+          }
+
+        } else if (this.from === '司机发布') {
+
+          if (this.place === 'startPlace') {
+
+            this.$router.push({path: '/driverPublish', query: {value1: val.city_name, startId: val.id}})
+
+          } else if (this.place === 'endPlace') {
+
+            this.$router.push({path: '/driverPublish', query: {value2: val.city_name, endId: val.id}})
+
+          }
+
+        } else {
+
+          this.$router.go(-1)
+
+          this.$toast.center('暂无来源')
+
+        }
+
+      // pinyin.getCamelChars("string") 此方法没什么用
+      },
+      _citys () {
+        citys().then(res => {
+
+          res.map(item => {
+
+            let _letter = pinyin.getCamelChars(item.city_name).substring(0, 1)  // 取第一位字母
+
+            item.letter = _letter
+
+          })
+
+          res.sort(
+            function compareFunction(param1, param2) {
+              return param1.letter.localeCompare(param2.letter,"en")
+            }
+          )
+
+          this.arrCity = sortList(res)
+
+          console.log('城市列表', res)
+
+        })
+      },
     }
   }
 </script>

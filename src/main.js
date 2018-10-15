@@ -6,9 +6,19 @@ import router from './router'
 import 'vue2-toast/lib/toast.css'
 import Toast from 'vue2-toast'
 
+import axios from 'axios'
+import qs from 'qs'
+
 Vue.use(Toast)
 
+/*axios相关*/
+axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';//"Accept": "application/json"
+Vue.prototype.axios = axios;
+Vue.prototype.qs = qs;
+
 Vue.config.productionTip = false
+
+
 
 /* eslint-disable no-new */
 new Vue({

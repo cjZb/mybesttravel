@@ -18,7 +18,6 @@
           <img :src="bigImgSrc" class="bigImg">
         </div>
       </div>
-
     </div>
   </div>
 </template>
